@@ -21,7 +21,13 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout() {
+    public ResponseEntity<?> logout(@RequestHeader(name = "auth-token") String authToken) {
+        authService.logout(authToken);
         return ResponseEntity.status(200).build();
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<?> test() {
+        return ResponseEntity.ok("");
     }
 }

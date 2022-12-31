@@ -1,5 +1,6 @@
 package com.dzhenetl.diplom.security.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -7,5 +8,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class JwtResponse {
 
+    @JsonProperty("auth-token")
     private String authToken;
 }
