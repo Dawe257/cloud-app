@@ -35,8 +35,6 @@ public class AuthService {
         SecurityContext context = SecurityContextHolder.getContext();
         context.getAuthentication().setAuthenticated(false);
         SecurityContextHolder.setContext(context);
-//        jwtProvider.getAccessClaims(token).
-//        jwtProvider.getAccessClaims(token).setExpiration(new Date());
     }
 
     public JwtAuthentication getAuthInfo() {
