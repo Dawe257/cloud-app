@@ -1,30 +1,38 @@
 package com.dzhenetl.diplom.confroller;
 
-import com.dzhenetl.diplom.service.FileService;
+import com.dzhenetl.diplom.service.StorageService;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.naming.AuthenticationException;
 import java.io.IOException;
 
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/cloud/file")
 @Transactional
 public class FileController {
 
-    private final FileService service;
+    private final StorageService service;
+
+    @Autowired
+    public FileController(StorageService storageService) {
+        this.service = storageService;
+    }
 
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    void uploadFile(MultipartFile file) throws AuthenticationException, IOException {
-        service.storeFile(file);
+    void uploadFile(MultipartFile file) {
+        service.store(file);
     }
 
     @DeleteMapping("/{filename}")
-    void deleteFile(@PathVariable String filename) {
-        service.deleteFile(filename);
+    void deleteFile(@PathVariable String filename) throws IOException {
+        service.delete(filename);
+    }
+
+    @GetMapping
+    void listOfFiles() {
+        System.out.println();
     }
 }

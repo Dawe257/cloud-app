@@ -15,8 +15,8 @@ public class File {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private byte[] data;
+    private String path;
+    private String filename;
     @ManyToOne
     private User user;
 }
