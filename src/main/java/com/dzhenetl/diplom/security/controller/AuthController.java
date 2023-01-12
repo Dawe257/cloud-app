@@ -20,7 +20,7 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(@RequestHeader(name = "auth-token") String authToken) {
+    public ResponseEntity logout(@RequestHeader(name = "auth-token") String authToken) {
         authService.logout(authToken);
         return ResponseEntity.status(200).build();
     }

@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -59,12 +60,19 @@ public class FileSystemStorageService implements StorageService {
                     .path(destinationFile.toAbsolutePath().toString())
                     .user(userRepository.findByLogin(principal).orElseThrow())
                     .filename(destinationFile.getFileName().toString())
+                    .size(file.getSize())
                     .build();
             fileRepository.save(fileToStore);
         }
         catch (IOException e) {
             throw new StorageException("Failed to store file.", e);
         }
+    }
+
+    public List<File> list(int limit) {
+        String principal = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userRepository.findByLogin(principal).orElseThrow();
+        return fileRepository.findByUserId(user.getId()).stream().limit(limit).collect(Collectors.toList());
     }
 
     public void delete(String filename) throws IOException {
@@ -79,11 +87,6 @@ public class FileSystemStorageService implements StorageService {
         }
     }
 
-    public List<File> listOfFiles() {
-        String principal = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = userRepository.findByLogin(principal).orElseThrow();
-        return fileRepository.findByUserId(user.getId());
-    }
 
     @Override
     public Stream<Path> loadAll() {

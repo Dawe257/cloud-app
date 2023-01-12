@@ -17,6 +17,7 @@ public class File {
     private Long id;
     private String path;
     private String filename;
+    private Long size;
     @ManyToOne
     private User user;
 }

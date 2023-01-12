@@ -40,6 +40,7 @@ public class JwtFilter extends GenericFilterBean {
     }
 
     private String getTokenFromRequest(HttpServletRequest request) {
-        return request.getHeader(AUTHORIZATION);
+        String token = request.getHeader(AUTHORIZATION);
+        return token == null ? null : token.split(" ")[1].trim();
     }
 }
