@@ -1,7 +1,7 @@
-package com.dzhenetl.diplom.security.controller;
+package com.dzhenetl.diplom.confroller;
 
-import com.dzhenetl.diplom.security.dto.JwtRequest;
-import com.dzhenetl.diplom.security.dto.JwtResponse;
+import com.dzhenetl.diplom.dto.JwtRequest;
+import com.dzhenetl.diplom.dto.JwtResponse;
 import com.dzhenetl.diplom.security.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,10 +23,5 @@ public class AuthController {
     public ResponseEntity logout(@RequestHeader(name = "auth-token") String authToken) {
         authService.logout(authToken);
         return ResponseEntity.status(200).build();
-    }
-
-    @GetMapping("/test")
-    public ResponseEntity<?> test() {
-        return ResponseEntity.ok("");
     }
 }

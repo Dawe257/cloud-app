@@ -2,7 +2,6 @@ package com.dzhenetl.diplom.confroller;
 
 import com.dzhenetl.diplom.entity.File;
 import com.dzhenetl.diplom.service.StorageService;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -15,7 +14,6 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@Transactional
 public class FileController {
 
     private final StorageService service;

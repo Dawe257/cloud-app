@@ -2,9 +2,10 @@ package com.dzhenetl.diplom.service;
 
 import com.dzhenetl.diplom.entity.File;
 import com.dzhenetl.diplom.exception.StorageException;
+import com.dzhenetl.diplom.exception.StorageFileNotFoundException;
 import com.dzhenetl.diplom.repository.FileRepository;
 import com.dzhenetl.diplom.security.domain.User;
-import com.dzhenetl.diplom.security.repository.UserRepository;
+import com.dzhenetl.diplom.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;

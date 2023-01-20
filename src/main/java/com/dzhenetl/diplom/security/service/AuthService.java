@@ -2,9 +2,10 @@ package com.dzhenetl.diplom.security.service;
 
 import com.dzhenetl.diplom.security.domain.JwtAuthentication;
 import com.dzhenetl.diplom.security.domain.User;
-import com.dzhenetl.diplom.security.dto.JwtRequest;
-import com.dzhenetl.diplom.security.dto.JwtResponse;
-import com.dzhenetl.diplom.security.exception.AuthException;
+import com.dzhenetl.diplom.dto.JwtRequest;
+import com.dzhenetl.diplom.dto.JwtResponse;
+import com.dzhenetl.diplom.exception.AuthException;
+import com.dzhenetl.diplom.service.UserService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContext;
@@ -21,12 +22,12 @@ public class AuthService {
 
     public JwtResponse login(@NonNull JwtRequest authRequest) {
         final User user = userService.getByLogin(authRequest.getLogin())
-                .orElseThrow(() -> new AuthException("Пользователь не найден"));
+                .orElseThrow(() -> new AuthException("Bad Credentials"));
         if (user.getPassword().equals(authRequest.getPassword())) {
             final String accessToken = jwtProvider.generateAccessToken(user);
             return new JwtResponse(accessToken);
         } else {
-            throw new AuthException("Неправильный пароль");
+            throw new AuthException("Bad Credentials");
         }
     }
 

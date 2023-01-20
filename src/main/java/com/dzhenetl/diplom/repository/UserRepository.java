@@ -1,4 +1,4 @@
-package com.dzhenetl.diplom.security.repository;
+package com.dzhenetl.diplom.repository;
 
 import com.dzhenetl.diplom.security.domain.User;
 import org.springframework.data.repository.CrudRepository;

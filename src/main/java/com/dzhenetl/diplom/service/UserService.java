@@ -1,7 +1,7 @@
-package com.dzhenetl.diplom.security.service;
+package com.dzhenetl.diplom.service;
 
 import com.dzhenetl.diplom.security.domain.User;
-import com.dzhenetl.diplom.security.repository.UserRepository;
+import com.dzhenetl.diplom.repository.UserRepository;
 import lombok.NonNull;
 import org.springframework.stereotype.Service;
 

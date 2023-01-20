@@ -1,4 +1,4 @@
-package com.dzhenetl.diplom.security.dto;
+package com.dzhenetl.diplom.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

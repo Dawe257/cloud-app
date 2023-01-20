@@ -1,6 +1,5 @@
-package com.dzhenetl.diplom.service;
+package com.dzhenetl.diplom.exception;
 
-import com.dzhenetl.diplom.exception.StorageException;
 
 public class StorageFileNotFoundException extends StorageException {
 

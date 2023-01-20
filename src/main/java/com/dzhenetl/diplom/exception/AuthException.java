@@ -1,5 +1,4 @@
-package com.dzhenetl.diplom.security.exception;
-
+package com.dzhenetl.diplom.exception;
 
 public class AuthException extends RuntimeException {
 

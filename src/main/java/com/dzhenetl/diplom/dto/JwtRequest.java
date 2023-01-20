@@ -1,4 +1,4 @@
-package com.dzhenetl.diplom.security.dto;
+package com.dzhenetl.diplom.dto;
 
 import lombok.Getter;
 import lombok.Setter;
