@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: 'cloud'
+      POSTGRES_USER: 'test'
+      POSTGRES_PASSWORD: 'test'
+#      POSTGRES_ROOT_PASSWORD: 'root'
+    ports:
+      - '5432:5432'
+    expose:
+      - '5432'
+  cloud:
+    image: cloud-app:1.0
+    ports:
+      - '9090:9090'
+    expose:
+      - '9090'
+    environment:
+      SPRING_DATASOURCE_URL: 'jdbc:postgresql://localhost:5432/cloud'
+      SPRING_JPA_HIBERNATE_DDL_AUTO: 'update'
+    depends_on:
+      - db

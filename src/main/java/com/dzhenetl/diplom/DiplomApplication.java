@@ -1,5 +1,7 @@
 package com.dzhenetl.diplom;
 
+import com.dzhenetl.diplom.repository.UserRepository;
+import com.dzhenetl.diplom.security.domain.User;
 import com.dzhenetl.diplom.service.StorageProperties;
 import com.dzhenetl.diplom.service.StorageService;
 import org.springframework.boot.CommandLineRunner;
@@ -17,7 +19,14 @@ public class DiplomApplication {
     }
 
     @Bean
-    CommandLineRunner init(StorageService storageService) {
+    CommandLineRunner init(StorageService storageService, UserRepository userRepository) {
+        User user = userRepository.findByLoginAndPassword("ivan", "123")
+                .orElse(User.builder()
+                        .login("ivan")
+                        .password("123")
+                        .build()
+                );
+        userRepository.save(user);
         return (args) -> {
 //            storageService.deleteAll();
             storageService.init();
