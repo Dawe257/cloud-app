@@ -12,6 +12,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Entity(name = "users")
+@EqualsAndHashCode
 public class User {
 
     @Id

@@ -10,5 +10,6 @@ import java.util.List;
 public interface FileRepository extends CrudRepository<File, Long> {
 
     List<File> findByUserId(Long id);
+    // TODO Optional
     File findByFilename(String filename);
 }

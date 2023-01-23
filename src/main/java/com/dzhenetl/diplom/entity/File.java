@@ -10,6 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @Setter
 @Getter
+@EqualsAndHashCode
 public class File {
 
     @Id

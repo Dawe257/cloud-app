@@ -27,9 +27,6 @@ public class DiplomApplication {
                         .build()
                 );
         userRepository.save(user);
-        return (args) -> {
-//            storageService.deleteAll();
-            storageService.init();
-        };
+        return (args) -> storageService.init();
     }
 }
