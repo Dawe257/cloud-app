@@ -179,10 +179,38 @@ class FileSystemStorageServiceTest {
         assertThrows(StorageException.class, () -> storageService.delete(filename));
     }
 
+    @Test
+    @WithMockUser(username = "ivan", password = "123", authorities = "ADMIN, USER")
+    void edit() throws IOException {
+        Path createdFile = Files.createFile(
+                tempDir.resolve("createdFileToEdit.txt")
+        );
+        Path editedFile = tempDir.resolve("edited.txt");
+        User ivan = userRepository.findByLogin("ivan").get();
+        File createdFileEntity = fileRepository.save(
+                File.builder()
+                        .user(ivan)
+                        .path(createdFile.toAbsolutePath().toString())
+                        .size(createdFile.toFile().length())
+                        .filename(createdFile.getFileName().toString())
+                        .build()
+        );
+        storageService.editFile(createdFileEntity.getFilename(), editedFile.getFileName().toString());
+
+        assertThat(fileRepository.findByFilename(createdFileEntity.getFilename())).isNull();
+        assertThat(fileRepository.findByFilename(editedFile.getFileName().toString())).isNotNull();
+        assertThat(Files.exists(createdFile)).isFalse();
+        assertThat(Files.exists(editedFile)).isTrue();
+    }
+
     @AfterEach
     void clean() throws IOException {
         Files.deleteIfExists(
                 tempDir.resolve("createdFile.txt")
         );
+        Files.deleteIfExists(
+                tempDir.resolve("edited.txt")
+        );
+        fileRepository.deleteAll();
     }
 }
