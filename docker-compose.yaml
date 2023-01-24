@@ -8,7 +8,6 @@ services:
       POSTGRES_DB: 'cloud'
       POSTGRES_USER: 'test'
       POSTGRES_PASSWORD: 'test'
-#      POSTGRES_ROOT_PASSWORD: 'root'
     ports:
       - '5432:5432'
     expose:
@@ -20,7 +19,7 @@ services:
     expose:
       - '9090'
     environment:
-      SPRING_DATASOURCE_URL: 'jdbc:postgresql://localhost:5432/cloud'
+      SPRING_DATASOURCE_URL: 'jdbc:postgresql://db:5432/cloud'
       SPRING_JPA_HIBERNATE_DDL_AUTO: 'update'
     depends_on:
       - db
