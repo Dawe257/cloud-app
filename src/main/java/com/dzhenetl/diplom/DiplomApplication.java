@@ -20,13 +20,20 @@ public class DiplomApplication {
 
     @Bean
     CommandLineRunner init(StorageService storageService, UserRepository userRepository) {
-        User user = userRepository.findByLoginAndPassword("ivan", "123")
+        User user1 = userRepository.findByLoginAndPassword("ivan", "123")
                 .orElse(User.builder()
                         .login("ivan")
                         .password("123")
                         .build()
                 );
-        userRepository.save(user);
+        User user2 = userRepository.findByLoginAndPassword("fedya", "12345")
+                .orElse(User.builder()
+                        .login("fedya")
+                        .password("12345")
+                        .build()
+                );
+        userRepository.save(user1);
+        userRepository.save(user2);
         return (args) -> storageService.init();
     }
 }

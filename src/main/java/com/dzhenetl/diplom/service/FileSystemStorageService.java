@@ -64,8 +64,7 @@ public class FileSystemStorageService implements StorageService {
                     .size(file.getSize())
                     .build();
             fileRepository.save(fileToStore);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new StorageException("Failed to store file.", e);
         }
     }
@@ -95,13 +94,35 @@ public class FileSystemStorageService implements StorageService {
             Resource resource = new UrlResource(file.toUri());
             if (resource.exists() || resource.isReadable()) {
                 return resource;
-            }
-            else {
+            } else {
                 throw new StorageFileNotFoundException("Could not read file: " + filename);
             }
-        }
-        catch (MalformedURLException e) {
+        } catch (MalformedURLException e) {
             throw new StorageFileNotFoundException("Could not read file: " + filename, e);
+        }
+    }
+
+    @Override
+    public void editFile(String source, String dest) {
+        String username = AuthService.getUsername();
+        User user = userRepository.findByLogin(username).orElseThrow();
+        File fileToEdit = fileRepository.findByFilename(source);
+        if (user.getId().equals(fileToEdit.getUser().getId())) {
+            Path sourceFile = this.rootLocation.resolve(
+                    Paths.get(source));
+            Path destinationFile = this.rootLocation.resolve(
+                    Paths.get(dest));
+            try {
+                Files.copy(sourceFile, destinationFile);
+                Files.delete(sourceFile);
+            } catch (IOException e) {
+                throw new StorageException("Failed to store file.", e);
+            }
+            fileToEdit.setFilename(destinationFile.getFileName().toString());
+            fileToEdit.setPath(destinationFile.toAbsolutePath().toString());
+            fileRepository.save(fileToEdit);
+        } else {
+            throw new StorageException(username + " is not owner file " + fileToEdit);
         }
     }
 
@@ -109,8 +130,7 @@ public class FileSystemStorageService implements StorageService {
     public void init() {
         try {
             Files.createDirectories(rootLocation);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new StorageException("Could not initialize storage", e);
         }
     }

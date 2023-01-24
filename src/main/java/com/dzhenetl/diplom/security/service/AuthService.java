@@ -32,7 +32,6 @@ public class AuthService {
         }
     }
 
-    // TODO логаут не работает
     public void logout(@NonNull String token) {
         SecurityContext context = SecurityContextHolder.getContext();
         context.getAuthentication().setAuthenticated(false);

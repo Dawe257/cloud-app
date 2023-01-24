@@ -2,22 +2,38 @@ package com.dzhenetl.diplom.service;
 
 import com.dzhenetl.diplom.repository.UserRepository;
 import com.dzhenetl.diplom.security.domain.User;
-import com.dzhenetl.diplom.util.BaseTest;
+import com.dzhenetl.diplom.util.TestcontainersDbUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class UserServiceTest extends BaseTest {
+@SpringBootTest
+@Testcontainers
+public class UserServiceTest {
 
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private UserService userService;
+
+    @Container
+    static PostgreSQLContainer<?> postgreSQLContainer = TestcontainersDbUtils.createPostgreSQLContainer();
+
+    @DynamicPropertySource
+    static void setLiquibaseChangeLog(DynamicPropertyRegistry propertyRegistry) {
+        TestcontainersDbUtils.setDatasourceProperties(propertyRegistry, postgreSQLContainer);
+    }
 
     @BeforeEach
     void setUp() {

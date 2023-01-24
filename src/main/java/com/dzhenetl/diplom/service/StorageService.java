@@ -18,4 +18,6 @@ public interface StorageService {
     void delete(String filename) throws IOException;
 
     List<File> list(int limit);
+
+    void editFile(String source, String dest);
 }

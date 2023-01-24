@@ -11,15 +11,18 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
 
+    public static final String LOGIN_URL = "/login";
+    public static final String LOGOUT_URL = "/logout";
+
     private final AuthService authService;
 
-    @PostMapping("/login")
+    @PostMapping(LOGIN_URL)
     public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest authRequest) {
         final JwtResponse token = authService.login(authRequest);
         return ResponseEntity.ok(token);
     }
 
-    @PostMapping("/logout")
+    @PostMapping(LOGOUT_URL)
     public ResponseEntity logout(@RequestHeader(name = "auth-token") String authToken) {
         authService.logout(authToken);
         return ResponseEntity.status(200).build();

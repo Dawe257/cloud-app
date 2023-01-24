@@ -5,15 +5,22 @@ import com.dzhenetl.diplom.exception.StorageException;
 import com.dzhenetl.diplom.repository.FileRepository;
 import com.dzhenetl.diplom.repository.UserRepository;
 import com.dzhenetl.diplom.security.domain.User;
-import com.dzhenetl.diplom.util.BaseTest;
+import com.dzhenetl.diplom.util.TestcontainersDbUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.CleanupMode;
 import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.web.multipart.MultipartFile;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.io.FileInputStream;
 import java.io.FileWriter;
@@ -27,13 +34,23 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-class FileSystemStorageServiceTest extends BaseTest {
+@SpringBootTest
+@Testcontainers
+class FileSystemStorageServiceTest {
 
     @TempDir(cleanup = CleanupMode.ALWAYS)
     private static Path tempDir;
     private final StorageService storageService;
     private final UserRepository userRepository;
     private final FileRepository fileRepository;
+
+    @Container
+    static PostgreSQLContainer<?> postgreSQLContainer = TestcontainersDbUtils.createPostgreSQLContainer();
+
+    @DynamicPropertySource
+    static void setLiquibaseChangeLog(DynamicPropertyRegistry propertyRegistry) {
+        TestcontainersDbUtils.setDatasourceProperties(propertyRegistry, postgreSQLContainer);
+    }
 
     @Autowired
     public FileSystemStorageServiceTest(FileRepository fileRepository, UserRepository userRepository) {
@@ -122,5 +139,50 @@ class FileSystemStorageServiceTest extends BaseTest {
 
         assertThat(actualFiles.size()).isEqualTo(3);
         assertThat(actualFiles).containsOnlyOnceElementsOf(ownerFiles);
+    }
+
+    @Test
+    @WithMockUser(username = "ivan", password = "123", authorities = "ADMIN, USER")
+    void delete() throws IOException {
+        Path createdFile = Files.createFile(
+                tempDir.resolve("createdFile.txt")
+        );
+        User ivan = userRepository.findByLogin("ivan").get();
+        File createdFileEntity = fileRepository.save(
+                File.builder()
+                        .user(ivan)
+                        .path(createdFile.toAbsolutePath().toString())
+                        .size(createdFile.toFile().length())
+                        .filename(createdFile.getFileName().toString())
+                        .build()
+        );
+
+        storageService.delete(createdFile.getFileName().toString());
+        assertThat(fileRepository.findByFilename(createdFileEntity.getFilename())).isNull();
+        assertThat(Files.exists(createdFile)).isFalse();
+
+        User petya = userRepository.save(User.builder()
+                .login("petya")
+                .build());
+        createdFile = Files.createFile(
+                tempDir.resolve("createdFile.txt")
+        );
+        createdFileEntity = fileRepository.save(
+                File.builder()
+                        .user(petya)
+                        .path(createdFile.toAbsolutePath().toString())
+                        .size(createdFile.toFile().length())
+                        .filename(createdFile.getFileName().toString())
+                        .build()
+        );
+        String filename = createdFileEntity.getFilename();
+        assertThrows(StorageException.class, () -> storageService.delete(filename));
+    }
+
+    @AfterEach
+    void clean() throws IOException {
+        Files.deleteIfExists(
+                tempDir.resolve("createdFile.txt")
+        );
     }
 }
